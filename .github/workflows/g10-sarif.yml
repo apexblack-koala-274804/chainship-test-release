@@ -13,7 +13,7 @@ jobs:
       - name: Create crafted SARIF
         shell: bash
         run: |
-          cat > /tmp/g10.sarif <<JSON
+          cat > /tmp/g10.sarif <<'JSON'
           {
             "version": "2.1.0",
             "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
