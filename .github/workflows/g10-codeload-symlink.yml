@@ -1,0 +1,22 @@
+name: G10 codeload symlink boundary
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  commit-symlink:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Commit hostile symlink fixture
+        shell: bash
+        run: |
+          git config user.name "G10 Boundary Bot"
+          git config user.email "g10-boundary@example.invalid"
+          rm -f g10-codeload-passwd
+          ln -s /etc/passwd g10-codeload-passwd
+          git add -A
+          git commit -m "G10 codeload symlink fixture" || true
+          git push
