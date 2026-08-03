@@ -1,0 +1,23 @@
+name: G10 public cache reader
+on:
+  push:
+    paths:
+      - .github/workflows/g10-public-cache-reader.yml
+permissions:
+  contents: read
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore cross-repository cache key
+        id: restore
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/g10-private-cache
+          key: g10-cross-repo-private-cache-30853164675
+      - name: Observe cache result
+        run: |
+          set -eux
+          echo "cache-hit=${{ steps.restore.outputs.cache-hit }}"
+          find /tmp/g10-private-cache -type f -maxdepth 2 -print 2>/dev/null || true
+          if [ -f /tmp/g10-private-cache/private-canary.txt ]; then cat /tmp/g10-private-cache/private-canary.txt; fi
