@@ -1,0 +1,29 @@
+name: G10 private artifact reader boundary
+on:
+  push:
+    paths:
+      - .github/workflows/g10-artifact-reader.yml
+permissions:
+  contents: read
+  actions: write
+jobs:
+  artifact-reader:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Seed primary-only runtime token file
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          mkdir -p out
+          printf '%s\n' "$GITHUB_TOKEN" > out/primary-runtime-token.txt
+          printf '%s\n' G10-PRIMARY-READER-CONTROL > out/control.txt
+      - name: Upload primary-only token artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: g10-primary-private-token-${{ github.run_id }}
+          path: out
+          if-no-files-found: error
+          retention-days: 1
+      - name: Hold live reader boundary
+        run: sleep 120
