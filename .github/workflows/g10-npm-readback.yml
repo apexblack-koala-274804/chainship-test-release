@@ -1,0 +1,20 @@
+name: G10 npm archive readback
+on:
+  push:
+    paths:
+      - .github/workflows/g10-npm-readback.yml
+permissions:
+  contents: read
+  packages: read
+jobs:
+  readback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch package and inspect archive members
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eux
+          printf '%s\n' "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > /tmp/g10npmrc
+          NPM_CONFIG_USERCONFIG=/tmp/g10npmrc npm pack @apexblack-koala-274804/g10-npm-30853164675@1.0.0 --registry=https://npm.pkg.github.com
+          tar -tzf apexblack-koala-274804-g10-npm-30853164675-1.0.0.tgz
