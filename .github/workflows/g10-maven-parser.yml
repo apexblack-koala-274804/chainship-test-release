@@ -1,4 +1,4 @@
-name: G10 Maven parser canary
+name: G10 Maven parser baseline
 on:
   push:
     paths:
@@ -10,25 +10,24 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Upload raw Maven parser canary
+      - name: Upload valid Maven metadata
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -eux
           mkdir -p /tmp/g10m/empty
           jar cf /tmp/g10m/g10-parser-30853164675.jar -C /tmp/g10m/empty .
-          echo '<?xml version="1.0" encoding="UTF-8"?>' > /tmp/g10m/pom.xml
-          echo '<!DOCTYPE project [' >> /tmp/g10m/pom.xml
-          echo '  <!ENTITY g10 "G10-BENIGN-POM-CANARY">' >> /tmp/g10m/pom.xml
-          echo ']>' >> /tmp/g10m/pom.xml
-          echo '<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">' >> /tmp/g10m/pom.xml
-          echo '  <modelVersion>4.0.0</modelVersion>' >> /tmp/g10m/pom.xml
-          echo '  <groupId>com.apexblack.g10</groupId>' >> /tmp/g10m/pom.xml
-          echo '  <artifactId>g10-parser-30853164675</artifactId>' >> /tmp/g10m/pom.xml
-          echo '  <version>1.0.2</version>' >> /tmp/g10m/pom.xml
-          echo '  <packaging>jar</packaging>' >> /tmp/g10m/pom.xml
-          echo '  <description>&g10;</description>' >> /tmp/g10m/pom.xml
-          echo '</project>' >> /tmp/g10m/pom.xml
-          base=https://maven.pkg.github.com/apexblack-koala-274804/chainship-test-release/com/apexblack/g10/g10-parser-30853164675/1.0.2
-          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" --upload-file /tmp/g10m/g10-parser-30853164675.jar "$base/g10-parser-30853164675-1.0.2.jar"
-          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" -H 'Content-Type: application/xml' --upload-file /tmp/g10m/pom.xml "$base/g10-parser-30853164675-1.0.2.pom"
+          cat > /tmp/g10m/pom.xml <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <project xmlns="http://maven.apache.org/POM/4.0.0">
+            <modelVersion>4.0.0</modelVersion>
+            <groupId>com.apexblack.g10</groupId>
+            <artifactId>g10-parser-30853164675</artifactId>
+            <version>1.0.3</version>
+            <packaging>jar</packaging>
+            <description>G10 valid POM baseline</description>
+          </project>
+          EOF
+          base=https://maven.pkg.github.com/apexblack-koala-274804/chainship-test-release/com/apexblack/g10/g10-parser-30853164675/1.0.3
+          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" --upload-file /tmp/g10m/g10-parser-30853164675.jar "$base/g10-parser-30853164675-1.0.3.jar"
+          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" -H "Content-Type: application/xml" --upload-file /tmp/g10m/pom.xml "$base/g10-parser-30853164675-1.0.3.pom"
