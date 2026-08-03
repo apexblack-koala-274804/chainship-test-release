@@ -1,4 +1,4 @@
-name: G10 File Pressure
+name: G10 Untrusted archive artifact boundary
 on:
   push:
     branches: [main]
@@ -10,29 +10,21 @@ jobs:
   file-pressure:
     runs-on: ubuntu-latest
     steps:
-      - name: Create archive and link fixtures
+      - name: Fetch controlled secondary archive as untrusted data
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf out
-          mkdir -p out/normal
-          printf "G10-CANARY-${{ github.run_id }}\n" > out/normal/canary.txt
-          ln -s /etc/passwd out/symlink-passwd
-          ln -s ../normal/canary.txt out/symlink-relative
-          python3 - <<"PY"
-          import zipfile
-          with zipfile.ZipFile("out/nested-boundary.zip", "w") as z:
-              z.writestr("../../g10-escaped.txt", "G10-ESCAPED-CANARY\n")
-              z.writestr("/tmp/g10-absolute.txt", "G10-ABSOLUTE-CANARY\n")
-              z.writestr("normal/../g10-normalized.txt", "G10-NORMALIZED-CANARY\n")
-              z.writestr("nested/../../g10-double.txt", "G10-DOUBLE-CANARY\n")
-              z.writestr("normal/g10-inner.txt", "G10-INNER-CANARY\n")
-          PY
-          find out -maxdepth 2 -print
-      - name: Upload file boundary artifact
+          rm -rf out /tmp/g10-untrusted.tar /tmp/g10-untrusted.b64
+          curl -fsSL https://github.com/apexblack-kangaroo-1782761273/chainship-test-release/raw/refs/heads/main/g10-untrusted-archive.b64 -o /tmp/g10-untrusted.b64
+          base64 -d /tmp/g10-untrusted.b64 > /tmp/g10-untrusted.tar
+          mkdir -p out
+          tar -xf /tmp/g10-untrusted.tar -C out
+          printf "G10-PRIMARY-CONTROL-${{ github.run_id }}\n" > out/input/primary-control.txt
+          find out -maxdepth 3 -printf "%M %p -> %l\n"
+      - name: Upload untrusted archive boundary artifact
         uses: actions/upload-artifact@v4
         with:
-          name: g10-file-boundary-${{ github.run_id }}
+          name: g10-untrusted-boundary-${{ github.run_id }}
           path: out
           if-no-files-found: error
           retention-days: 1
