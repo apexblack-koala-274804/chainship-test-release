@@ -23,11 +23,11 @@ jobs:
             <modelVersion>4.0.0</modelVersion>
             <groupId>com.apexblack.g10</groupId>
             <artifactId>g10-parser-30853164675</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
             <packaging>jar</packaging>
-            <description>G10 valid POM baseline</description>
+            <description>G10 valid POM baseline 1.0.4</description>
           </project>
           EOF
-          base=https://maven.pkg.github.com/apexblack-koala-274804/chainship-test-release/com/apexblack/g10/g10-parser-30853164675/1.0.3
-          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" --upload-file /tmp/g10m/g10-parser-30853164675.jar "$base/g10-parser-30853164675-1.0.3.jar"
-          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" -H "Content-Type: application/xml" --upload-file /tmp/g10m/pom.xml "$base/g10-parser-30853164675-1.0.3.pom"
+          base=https://maven.pkg.github.com/apexblack-koala-274804/chainship-test-release/com/apexblack/g10/g10-parser-30853164675/1.0.4
+          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" --upload-file /tmp/g10m/g10-parser-30853164675.jar "$base/g10-parser-30853164675-1.0.4.jar"
+          curl -fsS -u "$GITHUB_ACTOR:$GITHUB_TOKEN" -H "Content-Type: application/xml" --upload-file /tmp/g10m/pom.xml "$base/g10-parser-30853164675-1.0.4.pom"
